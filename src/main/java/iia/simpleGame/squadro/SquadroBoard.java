@@ -20,28 +20,26 @@ public class SquadroBoard implements IPartie2 {
 
     private HashMap<Integer, Character> dictIntToLetter;
     private HashMap<Character, Integer> dictLetterToInt;
-    private String[][] board;
+    private Character[][] board;
 
-    private SquadroBoard(Boolean vide) {
+    private SquadroBoard() {
         // cree un tableau a 2d 7x7
-        board = new String[7][7];
-        for (String[] x : board) {
-            Arrays.fill(x, " ");
+        board = new Character[7][7];
+        for (Character[] x : board) {
+            Arrays.fill(x, ' ');
         }
         this.score_vertical = 0;
         this.score_horizontal = 0;
         this.current_player = players.horizontal;
-        if (!vide) {
-            for (int i = 1; i < 6; i++) {
-                board[6][i] = "^";
-                board[i][0] = ">";
-            }
+        for (int i = 1; i < 6; i++) {
+            board[6][i] = '^';
+            board[i][0] = '>';
         }
         initMaps();
     }
 
-    private void initMaps () {
-        Character[] letters = {'A', 'B', 'C', 'D', 'E', 'F'};
+    private void initMaps() {
+        Character[] letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
         for (Integer i = 0; i < 7; i++) {
             dictIntToLetter.put(i, letters[i]);
             dictLetterToInt.put(letters[i], i);
@@ -117,142 +115,127 @@ public class SquadroBoard implements IPartie2 {
         return false;
     }
 
-    public String[] possibleMoves(String player) {
+    public ArrayList<String> possibleMoves(String player) {
+        // init la liste a renvoyer
+        ArrayList<String> coups = new ArrayList<String>();
         // Joueur : "horizontal"
         if (player.equals("horizontal")) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            // On lui cree un tableau correspondant au nombre de pieces qu'il lui reste.
-            //String tableau_coups[] = new String[5 - this.score_horizontal];
-            ArrayList<String> tableau_coups = new ArrayList<>();
-            for (int i = 1; i < 7; i++) {
-                // On est sur un ligne on peut donc creer un mouvement
-                StringBuilder str = new StringBuilder("");
-                // On va chercher la piece
-                for (int j = 0; j < 7; j++) {
-                    // On a trouer une piece, on va donc agr defferement selon le sens de la piece.
-                    if (this.board.get(i).get(j).equals('>')) {
-                        str.append(fromColumnToChar(j)).append(i + 1).append('-');
-                        Integer arrive = j + mouvement(true, "horizontal", i);
-                        // Si le deplacement arrive au bord du terrain on l'arrete sinon on le fait.
-                        if (arrive < 8) {
-                            // On cherche a partir de la position d'arrive calculee la premiere case vide.
-                            // Si elle est deja vide on s'y met sinon on cherche a la case suivante
-                            while (!this.board.get(i).get(arrive).equals('.')) {
-                                arrive++;
-                            }
-                            str.append(fromColumnToChar(arrive + 1)).append(i + 1);
-                        } else {
-                            str.append('G').append(i + 1);
+            for (int ligne = 1; ligne <= 5; ligne++) {
+                // si le pion n'est pas en position finale
+                if (this.board[ligne][0] != '<') {
+                    String coup = new StringBuilder(5);
+                    // on enregistre la position du pion
+                    int posColonne = 0;
+                    for (int colonne = 0; colonne < 7; colonne++) {
+                        if (this.board[ligne][colonne] != ' ') {
+                            posColonne = colonne;
+                            break;
                         }
-                        break;
-                    } else if (this.board.get(i).get(j).equals('<')) {
-                        str.append(fromColumnToChar(j)).append(i + 1).append('-');
-                        Integer arrive = j - mouvement(true, "horizontal", i);
-                        if (arrive > 0) {
-                            while (!this.board.get(i).get(arrive).equals('.')) {
-                                arrive--;
-                            }
-                            str.append(fromColumnToChar(arrive + 1)).append(i + 1);
-                        } else {
-                            str.append('G').append(i + 1);
-                        }
-                        break;
                     }
-                }
-                tableau_coups.add(str.toString());
-            }
-            String[] temp = new String[5];
-            for (int i = 0; i < temp.length; i++) {
-                temp[i] = tableau_coups.get(i);
-                System.out.println(temp[i]);
-            }
-            return temp;
-        } else {
-            ArrayList<String> tableau_coups = new ArrayList<>();
-            // On parcours tout les tableau jusqu'a trouver 'v' ou '^'
-            for (int i = 0; i < this.board.size(); i++) {
-                System.out.println(i);
-                for (int j = 0; j < this.board.get(i).size() - 1; j++) {
-                    // C'est si on trouve un des deux qu'on commence a ecrire.
-                    if (this.board.get(i).get(j).equals('^')) {
-                        System.out.println(i);
-                        StringBuilder str = new StringBuilder("");
-                        str.append(fromColumnToChar(j)).append(i + 1).append('-');
-                        Integer arrive = i - mouvement(true, "vertical", j);
-                        if (arrive <= 0) {
-                            str.append(fromColumnToChar(j)).append(0);
-                        } else {
-                            // Il faut inverser, ici ce sont les i qui doivent rechanger. On fixe la colonne.
-                            while (!this.board.get(arrive).get(j).equals('.')) {
-                                arrive--;
-                            }
-                            //Colonne d'arrivee - Ligne d'arrivee
-                            str.append(fromColumnToChar(j)).append(arrive + 1);
-                            System.out.println(str.toString());
-                        }
-                        tableau_coups.add(str.toString());
-                    } else if (this.board.get(i).get(j).equals('v')) {
-                        StringBuilder str = new StringBuilder("");
-                        str.append(fromColumnToChar(j)).append(i + 1).append('-');
-                        Integer arrive = i + mouvement(false, "vertical", j);
-                        if (arrive >= this.board.size()) {
-                            str.append(fromColumnToChar(j)).append(this.board.size() + 1);
-                        } else {
-                            while (!this.board.get(arrive).get(j).equals('.')) {
-                                arrive++;
-                            }
-                            str.append(fromColumnToChar(j)).append(this.board.size() + 1);
-                        }
-                        tableau_coups.add(str.toString());
-                    }
+                    // on enregistre la position de depart
+                    // on joue le coup pour obtenir la position d'arrivée
                 }
             }
-            String[] temp = new String[5];
-            System.out.println(tableau_coups);
-            for (int i = 0; i < temp.length; i++) {
-                temp[i] = tableau_coups.get(i);
-            }
-            return temp;
         }
 
+
+        // On lui cree un tableau correspondant au nombre de pieces qu'il lui reste.
+        //String tableau_coups[] = new String[5 - this.score_horizontal];
+        ArrayList<String> tableau_coups = new ArrayList<>();
+        for (int i = 1; i < 7; i++) {
+            // On est sur un ligne on peut donc creer un mouvement
+            StringBuilder str = new StringBuilder("");
+            // On va chercher la piece
+            for (int j = 0; j < 7; j++) {
+                // On a trouer une piece, on va donc agr defferement selon le sens de la piece.
+                if (this.board.get(i).get(j).equals('>')) {
+                    str.append(fromColumnToChar(j)).append(i + 1).append('-');
+                    Integer arrive = j + mouvement(true, "horizontal", i);
+                    // Si le deplacement arrive au bord du terrain on l'arrete sinon on le fait.
+                    if (arrive < 8) {
+                        // On cherche a partir de la position d'arrive calculee la premiere case vide.
+                        // Si elle est deja vide on s'y met sinon on cherche a la case suivante
+                        while (!this.board.get(i).get(arrive).equals('.')) {
+                            arrive++;
+                        }
+                        str.append(fromColumnToChar(arrive + 1)).append(i + 1);
+                    } else {
+                        str.append('G').append(i + 1);
+                    }
+                    break;
+                } else if (this.board.get(i).get(j).equals('<')) {
+                    str.append(fromColumnToChar(j)).append(i + 1).append('-');
+                    Integer arrive = j - mouvement(true, "horizontal", i);
+                    if (arrive > 0) {
+                        while (!this.board.get(i).get(arrive).equals('.')) {
+                            arrive--;
+                        }
+                        str.append(fromColumnToChar(arrive + 1)).append(i + 1);
+                    } else {
+                        str.append('G').append(i + 1);
+                    }
+                    break;
+                }
+            }
+            tableau_coups.add(str.toString());
+        }
+        String[] temp = new String[5];
+        for (int i = 0; i < temp.length; i++) {
+            temp[i] = tableau_coups.get(i);
+            System.out.println(temp[i]);
+        }
+        return temp;
+    } else
+
+    {
+        ArrayList<String> tableau_coups = new ArrayList<>();
+        // On parcours tout les tableau jusqu'a trouver 'v' ou '^'
+        for (int i = 0; i < this.board.size(); i++) {
+            System.out.println(i);
+            for (int j = 0; j < this.board.get(i).size() - 1; j++) {
+                // C'est si on trouve un des deux qu'on commence a ecrire.
+                if (this.board.get(i).get(j).equals('^')) {
+                    System.out.println(i);
+                    StringBuilder str = new StringBuilder("");
+                    str.append(fromColumnToChar(j)).append(i + 1).append('-');
+                    Integer arrive = i - mouvement(true, "vertical", j);
+                    if (arrive <= 0) {
+                        str.append(fromColumnToChar(j)).append(0);
+                    } else {
+                        // Il faut inverser, ici ce sont les i qui doivent rechanger. On fixe la colonne.
+                        while (!this.board.get(arrive).get(j).equals('.')) {
+                            arrive--;
+                        }
+                        //Colonne d'arrivee - Ligne d'arrivee
+                        str.append(fromColumnToChar(j)).append(arrive + 1);
+                        System.out.println(str.toString());
+                    }
+                    tableau_coups.add(str.toString());
+                } else if (this.board.get(i).get(j).equals('v')) {
+                    StringBuilder str = new StringBuilder("");
+                    str.append(fromColumnToChar(j)).append(i + 1).append('-');
+                    Integer arrive = i + mouvement(false, "vertical", j);
+                    if (arrive >= this.board.size()) {
+                        str.append(fromColumnToChar(j)).append(this.board.size() + 1);
+                    } else {
+                        while (!this.board.get(arrive).get(j).equals('.')) {
+                            arrive++;
+                        }
+                        str.append(fromColumnToChar(j)).append(this.board.size() + 1);
+                    }
+                    tableau_coups.add(str.toString());
+                }
+            }
+        }
+        String[] temp = new String[5];
+        System.out.println(tableau_coups);
+        for (int i = 0; i < temp.length; i++) {
+            temp[i] = tableau_coups.get(i);
+        }
+        return temp;
     }
+
+}
 
     public void play(String move, String player) {
         // Plusieurs choses a faire

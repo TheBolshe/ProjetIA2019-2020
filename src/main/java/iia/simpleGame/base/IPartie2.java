@@ -1,6 +1,7 @@
 package iia.simpleGame.base;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public interface IPartie2 {
     /** Initialise un plateau a partir d'un fichier texte
@@ -23,7 +24,7 @@ public interface IPartie2 {
     /** Calcul les coups possibles pour le joueur <player> sur le plateau courant
      * @param player le joueur qui joue, represente par "vertical" ou "horizontal"
      */
-    public String[] possibleMoves(String player);
+    public ArrayList<String> possibleMoves(String player);
 
     /** Modifie le plateau en jouant le coup move avec la pieve choose
      * @param move le coup a jouer, sous la forme "A4-C4"
