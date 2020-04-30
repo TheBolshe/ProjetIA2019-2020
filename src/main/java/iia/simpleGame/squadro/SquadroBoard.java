@@ -357,51 +357,6 @@ public class SquadroBoard implements IPartie2 {
         }
     }
 
-    // Fonction pour calculer selon la piece, le numero de ligne ou de colonne et le joueur quel est le nombre de pas reglementaire que la piece peut faire
-    // @param piece : vrai (aller : > | ^) ou faux (retour : < | v)
-    // @param num : la ligne/colonne correspondante
-    // @param player : le joueur qui joue
-    // On suppose la piece presente et le mouvement s'effectuant dans le bon sens rapport a la piece et au joueur, et les joueurs possibles "horizontal" ou "vertical".
-    public static Integer mouvement(Boolean aller, String player, Integer num) {
-        if (player.equals("horizontal")) {
-            if (aller) {
-                if (num.equals(1) || num.equals(5)) {
-                    return 1;
-                } else if (num.equals(2) || num.equals(4)) {
-                    return 3;
-                } else {
-                    return 2;
-                }
-            } else {
-                if (num.equals(1) || num.equals(5)) {
-                    return 3;
-                } else if (num.equals(2) || num.equals(4)) {
-                    return 1;
-                } else {
-                    return 2;
-                }
-            }
-        } else {
-            if (aller) {
-                if (num.equals(1) || num.equals(5)) {
-                    return 3;
-                } else if (num.equals(2) || num.equals(4)) {
-                    return 1;
-                } else {
-                    return 2;
-                }
-            } else {
-                if (num.equals(1) || num.equals(5)) {
-                    return 1;
-                } else if (num.equals(2) || num.equals(4)) {
-                    return 3;
-                } else {
-                    return 2;
-                }
-            }
-        }
-    }
-
     public static void printTab(ArrayList<ArrayList<Character>> t) {
         for (int i = 0; i < t.size() - 1; i++) {
             System.out.println(t.get(i));
@@ -409,12 +364,12 @@ public class SquadroBoard implements IPartie2 {
     }
 
     public static void main(String[] args) throws IOException {
-        SquadroBoard n = new SquadroBoard(false);
+        SquadroBoard n = new SquadroBoard();
         //n.printBoard();
         // On teste l'enregistrement du board dans plateau.txt qui est a la racine du projet
         n.saveToFile("plateau.txt");
         // On teste l'importation d'un fichier .txt au format convenu dans un board
-        SquadroBoard test = new SquadroBoard(true);
+        SquadroBoard test = new SquadroBoard();
         test.printBoard();
         test.setFromFile("test.txt");
         test.printBoard();
@@ -434,86 +389,3 @@ public class SquadroBoard implements IPartie2 {
         //test.isValidMove(move, test.current_player.toString());
     }
 }
-
-
-
-
-/*
-import java.util.Arrays;
-
-public class SquadroBoard {
-    private static final int[][] speed = {
-            {1, 3, 2, 3, 1},
-            {3, 1, 2, 1, 3}
-    };
-
-    private String[][] board;
-
-    public SquadroBoard() {
-        board = new String[7][7];
-        for (String[] x : board) {
-            Arrays.fill(x, " ");
-        }
-        for (int i = 1; i < 6; i++) {
-            board[6][i] = "^";
-            board[i][0] = ">";
-        }
-    }
-
-    public void backToStart(int lign, int column) {
-        switch (this.board[lign][column]) {
-            case "<":
-                this.board[lign][column] = " ";
-                this.board[lign][6] = "<";
-                break;
-            case ">":
-                this.board[lign][column] = " ";
-                this.board[lign][0] = ">";
-                break;
-            case "^":
-                this.board[lign][column] = " ";
-                this.board[6][column] = "^";
-                break;
-            case "v":
-                this.board[lign][column] = " ";
-                this.board[0][column] = "v";
-                break;
-            default:
-        }
-    }
-
-    public void move(String player, int piece) {
-        if (player == "v") {
-            int posColumn = piece;
-            int posLign = 6;
-            for (int lign = 0; lign < 7; lign++) {
-                if (this.board[lign][piece] != " ") {
-                    posLign = lign;
-                }
-            }
-            switch (this.board[posLign][posColumn]) {
-                case "^":
-                    int moves = this.speed[1][piece - 1];
-                    this.board[posLign][posColumn] = " ";
-                    while (moves > 0) {
-                        posLign--;
-                        if (posLign == 0) {
-                            moves = 0;
-                            this.board[posLign][posColumn] = "v";
-                        } else if (this.board[posLign][posColumn] == " ") {
-                            moves--;
-                            if (moves == 0) this.board[posLign][posColumn] = "^";
-                        } else {
-                            moves = 1;
-                            backToStart(posLign, posColumn);
-                        }
-                    }
-                    break;
-                case "v":
-            }
-        }
-
-
-    }
-}
-*/
