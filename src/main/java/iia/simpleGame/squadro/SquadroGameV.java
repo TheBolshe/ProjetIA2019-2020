@@ -2,8 +2,9 @@ package iia.simpleGame.squadro;
 
 public class SquadroGameV extends ASquadroGame {
 
-    public SquadroGameV(){
+    public SquadroGameV (Character[][] board) {
         super();
+        this.board = board;
     }
 
     @Override

@@ -9,15 +9,6 @@ import java.util.HashMap;
 
 public abstract class ASquadroGame extends AGame {
 
-    private Integer score_horizontal;
-    private Integer score_vertical;
-    private Players current_player;
-
-    private enum Players {
-        horizontal,
-        vertical
-    }
-
     private static final int[][] speed = {
             {1, 3, 2, 3, 1},
             {3, 1, 2, 1, 3}
@@ -25,7 +16,7 @@ public abstract class ASquadroGame extends AGame {
 
     private HashMap<Integer, Character> dictIntToLetter;
     private HashMap<Character, Integer> dictLetterToInt;
-    private Character[][] board;
+    protected Character[][] board;
 
     public ASquadroGame(){
 
@@ -34,9 +25,6 @@ public abstract class ASquadroGame extends AGame {
         for (Character[] x : board) {
             Arrays.fill(x, ' ');
         }
-        this.score_vertical = 0;
-        this.score_horizontal = 0;
-        this.current_player = Players.horizontal;
         for (int i = 1; i < 6; i++) {
             board[6][i] = '^';
             board[i][0] = '>';
@@ -58,15 +46,80 @@ public abstract class ASquadroGame extends AGame {
 
     private int[] stringToPos(String string) {
         char[] chars = string.toCharArray();
-        int[] ret =  {dictLetterToInt.get(chars[0]), chars[1] + 1};
+        int[] ret =  {dictLetterToInt.get(chars[0]), chars[1] + 1, dictLetterToInt.get(chars[3]), chars[4] + 1};
         return ret;
     }
 
+    private void toStart (int ligne, int colonne){
+        switch (this.board[ligne][colonne]) {
+            case '<':
+                this.board[ligne][6] = '<';
+                break;
+            case '>':
+                this.board[ligne][0] = '>';
+                break;
+            case '^':
+                this.board[6][colonne] = '^';
+                break;
+            case 'v':
+                this.board[0][colonne] = 'v';
+                break;
+            default:
+        }
+        this.board[ligne][colonne] = ' ';
+    }
+
+    public void updateBoard (String move, String player) {
+        int[] positions = stringToPos(move);
+        int[] depart = {positions[0], positions[1]};
+        int[] arrivee = {positions[3], positions[4]};
+        Character piece = this.board[depart[0]][depart[1]];
+        this.board[depart[0]][depart[1]] = ' ';
+        if (player == "HORISONTAL") {
+            int diff = arrivee[1] - depart[1];
+            int moves = Math.abs(diff);
+            int pas = diff / moves;
+            for (int colonne = depart[1]; colonne != arrivee[1]; colonne += pas) {
+                if (this.board[depart[0]][colonne] != ' ') {
+                    toStart(depart[0], colonne);
+                }
+            }
+            if (arrivee[1] == 6) {
+                this.board[arrivee[0]][arrivee[1]] = '<';
+            } else {
+                this.board[arrivee[0]][arrivee[1]] = piece;
+            }
+        } else {
+            int diff = arrivee[0] - depart[0];
+            int moves = Math.abs(diff);
+            int pas = diff / moves;
+            for (int ligne = depart[0]; ligne != arrivee[0]; ligne += pas) {
+                if (this.board[ligne][depart[1]] != ' ') {
+                    toStart(ligne, depart[1]);
+                }
+            }
+            if (arrivee[0] == 0) {
+                this.board[arrivee[0]][arrivee[1]] = 'v';
+            } else {
+                this.board[arrivee[0]][arrivee[1]] = piece;
+            }
+        }
+    }
 
     @Override
     public IGame play(String move, String role) {
-        // TODO !
-        return null;
+        ASquadroGame nextState = null;
+        switch (role) {
+            case "VERTICAL":
+                nextState = new SquadroGameV(this.board);
+                break;
+            case "HORISONTAL":
+                nextState = new SquadroGameH(this.board);
+                break;
+            default:
+        }
+        nextState.updateBoard(move, role);
+        return nextState;
     }
 
     @Override
@@ -74,11 +127,11 @@ public abstract class ASquadroGame extends AGame {
         // init la liste a renvoyer
         ArrayList<String> coups = new ArrayList<String>();
         // Joueur : "horizontal"
+        String coup = "";
         if (role.equals("horizontal")) {
             for (int ligne = 1; ligne <= 5; ligne++) {
                 // si le pion n'est pas en position finale
                 if (this.board[ligne][0] != '<') {
-                    String coup = new String();
                     // on trouve la position du pion
                     int posColonne = 0;
                     for (int colonne = 0; colonne < 7; colonne++) {
@@ -132,10 +185,9 @@ public abstract class ASquadroGame extends AGame {
             }
             // Joueur : "vertical"
         } else if (role.equals("vertical")) {
-            for (int colonne = 1; colonne <= 5; colonne++) {git
+            for (int colonne = 1; colonne <= 5; colonne++) {
                 // si le pion n'est pas en position finale
                 if (this.board[6][colonne] != '<') {
-                    String coup = new String();
                     // on trouve la position du pion
                     int posLigne = 0;
                     for (int ligne = 0; ligne < 7; ligne++) {
@@ -193,13 +245,19 @@ public abstract class ASquadroGame extends AGame {
 
     @Override
     public boolean isValidMove(String move, String role) {
-        // TODO !
+        int[] positions = stringToPos(move);
+        //TODO
         return false;
     }
 
     @Override
     public boolean isGameOver() {
-        // TODO !
-        return false;
+        int countV = 0;
+        int countH = 0;
+        for (int i = 1; i < 6; i++) {
+            if (this.board[6][i] == 'v') countV++;
+            if (this.board[i][0] == '<') countH++;
+        }
+        return countH >=4 || countV >= 4;
     }
 }
