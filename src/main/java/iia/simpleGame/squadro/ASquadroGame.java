@@ -128,7 +128,7 @@ public abstract class ASquadroGame extends AGame {
         ArrayList<String> coups = new ArrayList<String>();
         // Joueur : "horizontal"
         String coup = "";
-        if (role.equals("horizontal")) {
+        if (role.equals("HORISONTAL")) {
             for (int ligne = 1; ligne <= 5; ligne++) {
                 // si le pion n'est pas en position finale
                 if (this.board[ligne][0] != '<') {
@@ -184,7 +184,7 @@ public abstract class ASquadroGame extends AGame {
                 }
             }
             // Joueur : "vertical"
-        } else if (role.equals("vertical")) {
+        } else {
             for (int colonne = 1; colonne <= 5; colonne++) {
                 // si le pion n'est pas en position finale
                 if (this.board[6][colonne] != '<') {
@@ -245,8 +245,12 @@ public abstract class ASquadroGame extends AGame {
 
     @Override
     public boolean isValidMove(String move, String role) {
-        int[] positions = stringToPos(move);
-        //TODO
+        ArrayList<String> temp = this.possibleMoves(role);
+        for (int i = 0; i < temp.size(); i++) {
+            if (temp.get(i).equals(move)) {
+                return true;
+            }
+        }
         return false;
     }
 
