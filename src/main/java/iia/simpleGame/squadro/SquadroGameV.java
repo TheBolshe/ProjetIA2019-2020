@@ -20,9 +20,9 @@ public class SquadroGameV extends ASquadroGame {
             System.out.print("PROUT");
             switch (vainqueur){
                 case "HORISONTAL":
-                    return Integer.MIN_VALUE;
+                    return super.MIN_VALUE;
                 case "VERTICAL":
-                    return Integer.MAX_VALUE;
+                    return super.MAX_VALUE;
                 default:
             }
         }
@@ -100,7 +100,6 @@ public class SquadroGameV extends ASquadroGame {
         return positions.toArray(new int[0][]);
     }
 
-
     /**
      * Fonction dans laquelle on compte le nombre de pieces encore dans la partie.
      * @param role On ne cherche pas les meme pieces selon le role
@@ -169,12 +168,10 @@ public class SquadroGameV extends ASquadroGame {
                         }
                     }
                     for (int dessus = a; dessus >= 0; dessus--){
-                        System.out.println(b + "Vitesses " + speeds[1][b] + " rapports " + (a - dessus));
                         if ((!(b==0) || !(b==6)) && super.board[dessus][b].equals('v') && ((a - dessus) <= speeds[0][b-1])){
                             nb_menaces++;
                         }
                     }
-                    System.out.println(a + " " + b);
                 }
                 break;
             case  "VERTICAL":
@@ -220,4 +217,6 @@ public class SquadroGameV extends ASquadroGame {
         return "PERSONNE";
 
     }
+
+
 }

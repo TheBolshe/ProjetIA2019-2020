@@ -40,6 +40,18 @@ public abstract class ASquadroGame extends AGame {
         return speed;
     }
 
+    /**
+     * Methode pour afficher le plateau. On en a souvent besoin en cours de developpement.
+     */
+    protected void printBoard(){
+        for (Character[] ligne : this.board) {
+            for (Character el: ligne) {
+                System.out.print(el);
+            }
+            System.out.println();
+        }
+    }
+
     private void initMaps() {
         Character[] letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
         this.dictIntToLetter = new HashMap<>(7);
@@ -56,7 +68,10 @@ public abstract class ASquadroGame extends AGame {
 
     private int[] stringToPos(String string) {
         char[] chars = string.toCharArray();
-        int[] ret =  {dictLetterToInt.get(chars[0]), chars[1] + 1, dictLetterToInt.get(chars[3]), chars[4] + 1};
+        int n = Character.getNumericValue(chars[1])-1;
+        int m = Character.getNumericValue(chars[4])-1;
+
+        int[] ret =  {n, dictLetterToInt.get(chars[0]), m, dictLetterToInt.get(chars[3])};
         return ret;
     }
 
@@ -82,11 +97,12 @@ public abstract class ASquadroGame extends AGame {
     public void updateBoard (String move, String player) {
         int[] positions = stringToPos(move);
         int[] depart = {positions[0], positions[1]};
-        int[] arrivee = {positions[3], positions[4]};
+        int[] arrivee = {positions[2], positions[3]};
         Character piece = this.board[depart[0]][depart[1]];
         this.board[depart[0]][depart[1]] = ' ';
         if (player == "HORISONTAL") {
             int diff = arrivee[1] - depart[1];
+            System.out.println("DIFF" + diff);
             int moves = Math.abs(diff);
             int pas = diff / moves;
             for (int colonne = depart[1]; colonne != arrivee[1]; colonne += pas) {
@@ -137,9 +153,9 @@ public abstract class ASquadroGame extends AGame {
         // init la liste a renvoyer
         ArrayList<String> coups = new ArrayList<String>();
         // Joueur : "horizontal"
-        String coup = "";
         if (role.equals("HORISONTAL")) {
             for (int ligne = 1; ligne <= 5; ligne++) {
+                String coup = "";
                 // si le pion n'est pas en position finale
                 if (this.board[ligne][0] != '<') {
                     // on trouve la position du pion
@@ -196,6 +212,7 @@ public abstract class ASquadroGame extends AGame {
             // Joueur : "vertical"
         } else {
             for (int colonne = 1; colonne <= 5; colonne++) {
+                String coup = "";
                 // si le pion n'est pas en position finale
                 if (this.board[6][colonne] != '<') {
                     // on trouve la position du pion
