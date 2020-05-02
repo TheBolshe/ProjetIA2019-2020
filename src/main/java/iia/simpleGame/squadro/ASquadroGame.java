@@ -9,6 +9,10 @@ import java.util.HashMap;
 
 public abstract class ASquadroGame extends AGame {
 
+    /**
+     * speed[0] pour HORIZONTAL au aller et VERTICAL au retour
+     * speed[1] pour VERTICAL a l'aller et HORIZONTAL au retour
+     */
     private static final int[][] speed = {
             {1, 3, 2, 3, 1},
             {3, 1, 2, 1, 3}
@@ -32,8 +36,14 @@ public abstract class ASquadroGame extends AGame {
         initMaps();
     }
 
+    protected int[][] getSpeed(){
+        return speed;
+    }
+
     private void initMaps() {
         Character[] letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+        this.dictIntToLetter = new HashMap<>(7);
+        this.dictLetterToInt = new HashMap<>(7);
         for (Integer i = 0; i < 7; i++) {
             dictIntToLetter.put(i, letters[i]);
             dictLetterToInt.put(letters[i], i);
@@ -111,7 +121,7 @@ public abstract class ASquadroGame extends AGame {
         ASquadroGame nextState = null;
         switch (role) {
             case "VERTICAL":
-                nextState = new SquadroGameV(this.board);
+                nextState = new SquadroGameV();
                 break;
             case "HORISONTAL":
                 nextState = new SquadroGameH(this.board);
