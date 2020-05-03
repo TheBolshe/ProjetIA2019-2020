@@ -1,6 +1,6 @@
-package iia.simpleGame.nim;
+package iia.games.nim;
 
-import iia.simpleGame.base.IGame;
+import iia.games.base.IGame;
 import org.junit.Assert;
 import org.junit.Test;
 

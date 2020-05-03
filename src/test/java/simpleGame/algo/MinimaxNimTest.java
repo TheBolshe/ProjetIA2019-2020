@@ -1,9 +1,9 @@
-package iia.simpleGame.algo;
+package iia.games.algo;
 
-import iia.simpleGame.base.IGame;
-import iia.simpleGame.nim.ANimGame;
-import iia.simpleGame.nim.NimGameFirst;
-import iia.simpleGame.nim.NimGameSecond;
+import iia.games.base.IGame;
+import iia.games.nim.ANimGame;
+import iia.games.nim.NimGameFirst;
+import iia.games.nim.NimGameSecond;
 import org.junit.Assert;
 import org.junit.Test;
 
