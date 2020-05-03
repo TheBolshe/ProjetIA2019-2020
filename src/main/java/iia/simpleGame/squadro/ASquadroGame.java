@@ -140,7 +140,7 @@ public abstract class ASquadroGame extends AGame {
                 nextState = new SquadroGameV();
                 break;
             case "HORISONTAL":
-                nextState = new SquadroGameH(this.board);
+                nextState = new SquadroGameH();
                 break;
             default:
         }

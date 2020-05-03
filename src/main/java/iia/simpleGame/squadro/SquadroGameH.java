@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class SquadroGameH extends ASquadroGame {
 
-    public SquadroGameH (Character[][] board) {
+    public SquadroGameH () {
         super();
         this.board = board;
     }
