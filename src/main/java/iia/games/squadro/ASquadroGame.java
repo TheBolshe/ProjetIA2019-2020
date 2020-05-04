@@ -337,6 +337,7 @@ public abstract class ASquadroGame extends AGame implements Serializable {
 
     }
 
+
     /**
      * Une premiere fonction basique de calcul d'heuristique.
      * n terme, n correspondant au nombre de pieces restantes
@@ -364,6 +365,20 @@ public abstract class ASquadroGame extends AGame implements Serializable {
 
         /* On effectue le calcul de notre heuristique selon les valeurs */
         value += (points * (5 - in_game)) + (nb_pieces_menacees * risque)  + (in_game * mouvement);
+
+        return value;
+    }
+
+    /**
+     * Une fonction de calcul d'heuristique plus fine
+     * @param role
+     * @return
+     */
+    protected int advancedHeuristic(String role){
+        int value = 0;
+        int[][] positions = piecesPositions(role);
+
+
 
         return value;
     }
@@ -418,6 +433,30 @@ public abstract class ASquadroGame extends AGame implements Serializable {
             default:
         }
         return nb_menaces;
+    }
+
+    /**
+     * Menace. Cette fonction verifie les positions des pieces du joueur et s'il y a une piece adverse menacee,
+     * calcule la distance entre la piece adverse en question et son point de redepart
+     */
+    protected int menaces(String role, int[][] pieces){
+        System.out.println("MENACE");
+        int value = 0;
+        for (int[] coordonnees: pieces) {
+            for (int place : coordonnees) {
+                System.out.print(place);
+            }
+        }
+
+        switch (role){
+            case "HORISONTAL":
+
+                break;
+            case "VERTICAL":
+                break;
+            default:
+        }
+        return value;
     }
 
     /**
