@@ -110,7 +110,7 @@ public abstract class ASquadroGame extends AGame implements Serializable {
     }
 
     public void updateBoard (String move, String player) {
-        System.out.println(player + " " + move);
+        // System.out.println(player + " " + move);
         //printBoard();
         int[] positions = stringToPos(move);
         int[] depart = {positions[0], positions[1]};
