@@ -3,6 +3,7 @@
 -doctitle 'iia_squadro_Bibitchkov_Krakowiak 0.0.1 API'
 -quiet 
 -windowtitle 'iia_squadro_Bibitchkov_Krakowiak 0.0.1 API'
+'A:\\Documents\\FAC\\Projets\\2019-2020\\iia_squadro_Bibitchkov_Krakowiak\\src\\main\\java\\iia\\games\\algo\\AlphaBeta.java'
 'A:\\Documents\\FAC\\Projets\\2019-2020\\iia_squadro_Bibitchkov_Krakowiak\\src\\main\\java\\iia\\games\\algo\\IAlgo.java'
 'A:\\Documents\\FAC\\Projets\\2019-2020\\iia_squadro_Bibitchkov_Krakowiak\\src\\main\\java\\iia\\games\\algo\\Minimax.java'
 'A:\\Documents\\FAC\\Projets\\2019-2020\\iia_squadro_Bibitchkov_Krakowiak\\src\\main\\java\\iia\\games\\base\\AGame.java'
@@ -17,6 +18,7 @@
 'A:\\Documents\\FAC\\Projets\\2019-2020\\iia_squadro_Bibitchkov_Krakowiak\\src\\main\\java\\iia\\games\\nim\\PlayNim.java'
 'A:\\Documents\\FAC\\Projets\\2019-2020\\iia_squadro_Bibitchkov_Krakowiak\\src\\main\\java\\iia\\games\\squadro\\ASquadroGame.java'
 'A:\\Documents\\FAC\\Projets\\2019-2020\\iia_squadro_Bibitchkov_Krakowiak\\src\\main\\java\\iia\\games\\squadro\\MyChallenger.java'
+'A:\\Documents\\FAC\\Projets\\2019-2020\\iia_squadro_Bibitchkov_Krakowiak\\src\\main\\java\\iia\\games\\squadro\\MyChallenger2.java'
 'A:\\Documents\\FAC\\Projets\\2019-2020\\iia_squadro_Bibitchkov_Krakowiak\\src\\main\\java\\iia\\games\\squadro\\PlaySquadro.java'
 'A:\\Documents\\FAC\\Projets\\2019-2020\\iia_squadro_Bibitchkov_Krakowiak\\src\\main\\java\\iia\\games\\squadro\\SquadroGameH.java'
 'A:\\Documents\\FAC\\Projets\\2019-2020\\iia_squadro_Bibitchkov_Krakowiak\\src\\main\\java\\iia\\games\\squadro\\SquadroGameV.java'
