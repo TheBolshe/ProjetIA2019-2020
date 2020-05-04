@@ -21,7 +21,8 @@ public class SquadroGameH extends ASquadroGame {
         /* Avant meme de choisir une fonction heuristique particuliere on applique ca a chaque fois */
         switch (whoWon()) {
             case "PERSONNE":
-                return basicHeuristic(role);
+                //return basicHeuristic(role);
+                return advancedHeuristic(role);
             case "HORISONTAL":
                 return super.MAX_VALUE;
             case "VERTICAL":
