@@ -22,6 +22,7 @@ public class PlaySquadro {
         h1.possibleMoves("VERTICAL");
 
         h1.possibleMoves("HORISONTAL");
+        System.out.println((char[]) null);
 
     }
 }
