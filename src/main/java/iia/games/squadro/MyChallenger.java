@@ -12,6 +12,7 @@
 
 package iia.games.squadro;
 
+import iia.games.algo.AlphaBeta;
 import iia.games.algo.IAlgo;
 import iia.games.algo.Minimax;
 import iia.games.base.IChallenger;
@@ -26,7 +27,7 @@ public class MyChallenger implements IChallenger {
 
     @Override
     public String teamName() {
-        return "Bibitchkov_Krakowiak";
+        return "Bibitchkov_Krakowiak1";
     }
 
     @Override
@@ -44,19 +45,19 @@ public class MyChallenger implements IChallenger {
                 break;
             default:
         }
-        this.algo = new Minimax(my_side, other_side, 5);
+        this.algo = new AlphaBeta(my_side, other_side, 15);
     }
 
     @Override
     public void iPlay(String move) {
         this.game.updateBoard(move, this.my_side);
-        this.game.printBoard();
+        // this.game.printBoard();
     }
 
     @Override
     public void otherPlay(String move) {
         this.game.updateBoard(move, this.other_side);
-        this.game.printBoard();
+        // this.game.printBoard();
     }
 
     @Override

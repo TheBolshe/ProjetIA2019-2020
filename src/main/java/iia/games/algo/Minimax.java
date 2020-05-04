@@ -4,6 +4,7 @@ import iia.games.base.IGame;
 import iia.games.squadro.ASquadroGame;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Minimax implements IAlgo {
     private final static int DEPTHMAXDEFAUT = 4;
@@ -13,12 +14,14 @@ public class Minimax implements IAlgo {
     private int nbNodes;
     private int nbLeaves;
 
-    public Minimax(String maxRole, String minRole){
+    Random rand = new Random();
+
+    public Minimax(String maxRole, String minRole) {
         roleMax = maxRole;
         roleMin = minRole;
     }
 
-    public Minimax(String maxRole, String minRole, int maxDepth){
+    public Minimax(String maxRole, String minRole, int maxDepth) {
         roleMax = maxRole;
         roleMin = minRole;
         depthMax = maxDepth;
@@ -30,24 +33,24 @@ public class Minimax implements IAlgo {
 
         this.nbNodes = 1;
         this.nbLeaves = 0;
-        String bestMove = null;
-        int bestMoveHeuristicValue = java.lang.Integer.MIN_VALUE;
+        ArrayList<String> listeMeilleursCoups = new ArrayList<String>();
+        int bestMoveHeuristicValue = IGame.MIN_VALUE;
         // On calcul tous les coups possibles
         ArrayList<String> allMoves = game.possibleMoves(roleMax);
         for (String move : allMoves) {
             int heuristicMove;
             IGame new_b = game.play(move, roleMax);
-            //((ASquadroGame)new_b).printBoard();
             heuristicMove = minmax(new_b, depthMax - 1);
             System.out.println("Le coup " + move + " a pour valeur minimax " + heuristicMove);
             if (heuristicMove > bestMoveHeuristicValue) {
                 bestMoveHeuristicValue = heuristicMove;
-                System.out.println("Le coup " + move + " est meilleur que " + bestMove);
-                bestMove = move;
+                listeMeilleursCoups.clear();
+                listeMeilleursCoups.add(move);
+            } else if (bestMoveHeuristicValue == heuristicMove) {
+                listeMeilleursCoups.add(move);
             }
         }
-        if (bestMove == null && !allMoves.isEmpty())
-            bestMove = allMoves.get(0);
+        String bestMove = listeMeilleursCoups.get(rand.nextInt(listeMeilleursCoups.size()));
         return bestMove;
     }
     /*
@@ -56,7 +59,7 @@ public class Minimax implements IAlgo {
      */
 
     public String toString() {
-        return "MiniMax(ProfMax="+ depthMax +")";
+        return "MiniMax(ProfMax=" + depthMax + ")";
     }
 
     public int getNbNodes() {
@@ -78,10 +81,10 @@ public class Minimax implements IAlgo {
             return game.getValue(roleMax);
         } else {
             nbNodes++;
-            int maxValue = java.lang.Integer.MIN_VALUE;
+            int maxValue = IGame.MIN_VALUE;
             // System.out.println("Coups Possibles for " + plateau + " :  "+ lesCoups);
             for (IGame succ : game.successors(roleMax)) {
-                maxValue = Math.max(maxValue, minmax(succ, depth - 1) );
+                maxValue = Math.max(maxValue, minmax(succ, depth - 1));
                 // System.out.println("maxValue for " + nPlateau + " =  "+ maxValue);
             }
             // System.out.println("maxValue " + plateau + " =  "+ maxValue);
@@ -96,7 +99,7 @@ public class Minimax implements IAlgo {
             return game.getValue(roleMin);
         } else {
             nbNodes++;
-            int minValue = java.lang.Integer.MAX_VALUE;
+            int minValue = IGame.MAX_VALUE;
             // System.out.println("Coups Possibles for " + plateau + " :  "+ lesCoups);
             for (IGame succ : game.successors(roleMin)) {
                 minValue = Math.min(minValue, maxmin(succ, depth - 1));
