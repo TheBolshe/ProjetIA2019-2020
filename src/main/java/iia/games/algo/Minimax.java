@@ -1,6 +1,7 @@
 package iia.games.algo;
 
 import iia.games.base.IGame;
+import iia.games.squadro.ASquadroGame;
 
 import java.util.ArrayList;
 
@@ -36,6 +37,7 @@ public class Minimax implements IAlgo {
         for (String move : allMoves) {
             int heuristicMove;
             IGame new_b = game.play(move, roleMax);
+            //((ASquadroGame)new_b).printBoard();
             heuristicMove = minmax(new_b, depthMax - 1);
             System.out.println("Le coup " + move + " a pour valeur minimax " + heuristicMove);
             if (heuristicMove > bestMoveHeuristicValue) {

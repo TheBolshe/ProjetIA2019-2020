@@ -2,11 +2,12 @@ package iia.games.squadro;
 
 import iia.games.base.AGame;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public abstract class ASquadroGame extends AGame {
+public abstract class ASquadroGame extends AGame implements Serializable {
 
     /**
      * speed[0] pour HORIZONTAL au aller et VERTICAL au retour
@@ -24,7 +25,7 @@ public abstract class ASquadroGame extends AGame {
     public ASquadroGame(){
 
         // cree un tableau a 2d 7x7
-        board = new Character[7][7];
+        this.board = new Character[7][7];
         for (Character[] x : board) {
             Arrays.fill(x, ' ');
         }
@@ -35,6 +36,21 @@ public abstract class ASquadroGame extends AGame {
         initMaps();
     }
 
+    public static Object deepCopy(Object object) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream outputStrm = new ObjectOutputStream(outputStream);
+            outputStrm.writeObject(object);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            ObjectInputStream objInputStream = new ObjectInputStream(inputStream);
+            return objInputStream.readObject();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     protected int[][] getSpeed(){
         return speed;
     }
@@ -42,7 +58,7 @@ public abstract class ASquadroGame extends AGame {
     /**
      * Methode pour afficher le plateau. On en a souvent besoin en cours de developpement.
      */
-    protected void printBoard(){
+    public void printBoard(){
         for (Character[] ligne : this.board) {
             for (Character el: ligne) {
                 System.out.print(el);
@@ -55,7 +71,7 @@ public abstract class ASquadroGame extends AGame {
         Character[] letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
         this.dictIntToLetter = new HashMap<>(7);
         this.dictLetterToInt = new HashMap<>(7);
-        for (Integer i = 0; i < 7; i++) {
+        for (int i = 0; i < 7; i++) {
             dictIntToLetter.put(i, letters[i]);
             dictLetterToInt.put(letters[i], i);
         }
@@ -67,10 +83,11 @@ public abstract class ASquadroGame extends AGame {
 
     private int[] stringToPos(String string) {
         char[] chars = string.toCharArray();
-        int n = Character.getNumericValue(chars[1])-1;
-        int m = Character.getNumericValue(chars[4])-1;
-
-        return new int[]{n, dictLetterToInt.get(chars[0]), m, dictLetterToInt.get(chars[3])};
+        //for (Character c : chars) {System.out.print(c);}
+        //System.out.println();
+        int departLigne = Character.getNumericValue(chars[1]) - 1;
+        int arriveeLigne = Character.getNumericValue(chars[4]) - 1;
+        return new int[]{departLigne, dictLetterToInt.get(chars[0]), arriveeLigne, dictLetterToInt.get(chars[3])};
     }
 
     private void toStart (int ligne, int colonne){
@@ -93,6 +110,8 @@ public abstract class ASquadroGame extends AGame {
     }
 
     public void updateBoard (String move, String player) {
+        //System.out.println("ORIGINE");
+        //printBoard();
         int[] positions = stringToPos(move);
         int[] depart = {positions[0], positions[1]};
         int[] arrivee = {positions[2], positions[3]};
@@ -127,34 +146,28 @@ public abstract class ASquadroGame extends AGame {
                 this.board[arrivee[0]][arrivee[1]] = piece;
             }
         }
+        //printBoard();
     }
 
 
 
     @Override
     public ArrayList<String> possibleMoves(String role) {
-        this.printBoard();
-        System.out.println(role);
         // init la liste a renvoyer
-        System.out.println("Etape 1");
         ArrayList<String> coups = new ArrayList<>();
-        System.out.println("Etape 1.1");
         // Joueur : "horizontal"
         if (role == "HORISONTAL") {
-            System.out.println("Etape 2");
             for (int ligne = 1; ligne <= 5; ligne++) {
-                System.out.println("Etape 3 : ligne " + ligne);
                 StringBuilder coup = new StringBuilder();
                 // si le pion n'est pas en position finale
                 if (this.board[ligne][0] != '<') {
                     // on trouve la position du pion
                     int posColonne = 0;
                     for (int colonne = 0; colonne < 7; colonne++) {
-                        System.out.print(colonne + " ");
-                        if (this.board[ligne][colonne] != ' ') {
+                        if (this.board[ligne][colonne] == '<' || this.board[ligne][colonne] == '>') {
                             posColonne = colonne;
-                            System.out.println(posColonne);
                             // on enregistre la position de depart
+                            System.out.print(posToString(ligne, posColonne) + "-");
                             coup.append(posToString(ligne, posColonne)).append("-");
                             break;
                         }
@@ -169,10 +182,14 @@ public abstract class ASquadroGame extends AGame {
                             // on va a droite
                             posColonne++;
                             moves--;
-                            if (this.board[ligne][posColonne] != ' ') {
+                            System.out.print(posToString(ligne, posColonne) + ":");
+                            if (posColonne >= 6) {
+                                coup.append(posToString(ligne, posColonne));
+                                moves = 0;
+                            } else if (this.board[ligne][posColonne] != ' ') {
                                 // si la case n'est pas vide on passe a la case suivante et il ne reste plus qu'une case de deplacement
                                 moves = 1;
-                            } else if (moves == 0 || posColonne >= 6) {
+                            } else if (moves == 0) {
                                 // si on a utilisé toute la vitesse ou si on est au bord on renvoie la position actuelle en cible
                                 coup.append(posToString(ligne, posColonne));
                             }
@@ -187,10 +204,14 @@ public abstract class ASquadroGame extends AGame {
                             // on va a gauche
                             posColonne--;
                             moves--;
-                            if (this.board[ligne][posColonne] != ' ') {
+                            System.out.print(posToString(ligne, posColonne) + ":");
+                            if (posColonne <= 0) {
+                                coup.append(posToString(ligne, posColonne));
+                                moves = 0;
+                            } else if (this.board[ligne][posColonne] != ' ') {
                                 // si la case n'est pas vide on passe a la case suivante et il ne reste plus qu'une case de deplacement
                                 moves = 1;
-                            } else if (moves == 0 || posColonne <= 0) {
+                            } else if (moves == 0) {
                                 // si on a utilisé toute la vitesse ou si on est au bord on renvoie la position actuelle en cible
                                 coup.append(posToString(ligne, posColonne));
                             }
@@ -200,20 +221,20 @@ public abstract class ASquadroGame extends AGame {
                     }
                 }
             }
+            System.out.println();
             // Joueur : "vertical"
         } else {
-            System.out.println("Etape 2");
             for (int colonne = 1; colonne <= 5; colonne++) {
-                System.out.println("Etape 3 : colonne " + colonne);
                 StringBuilder coup = new StringBuilder();
                 // si le pion n'est pas en position finale
                 if (this.board[6][colonne] != '<') {
                     // on trouve la position du pion
                     int posLigne = 0;
                     for (int ligne = 0; ligne < 7; ligne++) {
-                        if (this.board[ligne][colonne] != ' ') {
+                        if (this.board[ligne][colonne] == '^' || this.board[ligne][colonne] == 'v') {
                             posLigne = ligne;
                             // on enregistre la position de depart
+                            System.out.print(posToString(posLigne, colonne) + "-");
                             coup.append(posToString(posLigne, colonne)).append("-");
                             break;
                         }
@@ -228,10 +249,14 @@ public abstract class ASquadroGame extends AGame {
                             // on monte
                             posLigne--;
                             moves--;
-                            if (this.board[posLigne][colonne] != ' ') {
+                            System.out.print(posToString(posLigne, colonne) + ":");
+                            if (posLigne <= 0) {
+                                coup.append(posToString(posLigne, colonne));
+                                moves = 0;
+                            } else if (this.board[posLigne][colonne] != ' ') {
                                 // si la case n'est pas vide on passe a la case suivante et il ne reste plus qu'une case de deplacement
                                 moves = 1;
-                            } else if (moves == 0 || posLigne <= 0) {
+                            } else if (moves == 0) {
                                 // si on a utilisé toute la vitesse ou si on est au bord on renvoie la position actuelle en cible
                                 coup.append(posToString(posLigne, colonne));
                             }
@@ -246,7 +271,11 @@ public abstract class ASquadroGame extends AGame {
                             // on descend
                             posLigne++;
                             moves--;
-                            if (this.board[posLigne][colonne] != ' ') {
+                            System.out.print(posToString(posLigne, colonne) + ":");
+                            if (posLigne >= 6) {
+                                coup.append(posToString(posLigne, colonne));
+                                moves = 0;
+                            } else if (this.board[posLigne][colonne] != ' ') {
                                 // si la case n'est pas vide on passe a la case suivante et il ne reste plus qu'une case de deplacement
                                 moves = 1;
                             } else if (moves == 0 || posLigne >= 6) {
@@ -260,6 +289,7 @@ public abstract class ASquadroGame extends AGame {
                 }
             }
         }
+        System.out.println();
         return coups;
     }
 
@@ -308,6 +338,37 @@ public abstract class ASquadroGame extends AGame {
     }
 
     /**
+     * Une premiere fonction basique de calcul d'heuristique.
+     * n terme, n correspondant au nombre de pieces restantes
+     * Pour chaque n :
+     * On devalorise le fait d'avoir une piece directement vulnerable.
+     * On valorise n'importe quel coup de la meme maniere.
+     * On valorise le fait d'avoir gagne un point.
+     * @param role : Indique le tour du joueur sur le plateau. Le calcul est different si c'est AMI ou ENNEMI qui doit jouer
+     * @return int value : La valeur heuristique calculee
+     */
+    protected int basicHeuristic(String role){
+        int value = 0;
+        int[][] positions;
+        int in_game;
+        int nb_pieces_menacees;
+        /* On fixe ici les constantes associees aux differents parametres */
+        int points = 10;        // La valeur associee au nombre de points actuel marque par le joueur.
+        int risque = -50;       // Ce qu'on va ajouter par piece vulnerable
+        int mouvement = 5;      // Point marque par mouvement possible.
+
+        /* On compte le nombre de pieces encore en jeu */
+        in_game = nombrePieces(role);
+        /* On cherche s'il y a des pieces menacantes pour le joueur "role"  */
+        nb_pieces_menacees = nombresMenacees(role);
+
+        /* On effectue le calcul de notre heuristique selon les valeurs */
+        value += (points * (5 - in_game)) + (nb_pieces_menacees * risque)  + (in_game * mouvement);
+
+        return value;
+    }
+
+    /**
      * Cette fonction calcule le nombre de pieces susceptibles d'etre directement renvoyee par une piece adverse
      * @param role Change les pieces cherchees.
      * @return nb_menaces Un nombre de 0 a 5.
@@ -315,6 +376,7 @@ public abstract class ASquadroGame extends AGame {
     protected int nombresMenacees(String role){
         int nb_menaces = 0;
         int[][] speeds = getSpeed();
+        /* On cherche les positions de nos pieces */
         int[][] positions_tableau = piecesPositions(role);
 
         switch (role){

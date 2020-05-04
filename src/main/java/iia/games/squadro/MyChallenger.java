@@ -44,17 +44,19 @@ public class MyChallenger implements IChallenger {
                 break;
             default:
         }
-        this.algo = new Minimax(my_side, other_side, 2);
+        this.algo = new Minimax(my_side, other_side, 3);
     }
 
     @Override
     public void iPlay(String move) {
         this.game.updateBoard(move, this.my_side);
+        this.game.printBoard();
     }
 
     @Override
     public void otherPlay(String move) {
         this.game.updateBoard(move, this.other_side);
+        this.game.printBoard();
     }
 
     @Override
