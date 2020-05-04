@@ -448,130 +448,167 @@ public abstract class ASquadroGame extends AGame implements Serializable {
         int value = 0;
         int facteur = 30;
 
-        switch (role){
-            case "HORISONTAL":
-                /* Parcous les positions de chaque pieces */
-                for (int[] ligne : pieces) {
-                    int X = ligne[0];
-                    int Y = ligne[1];
-                    System.out.println("X = " + X + "; Y = " + Y);
-                    Character cha = this.board[X][Y];
-                    System.out.println("NAH" + cha);
-
-                    switch (cha){
-                        case '>':
-                            int vitesseHD = speed[0][X - 1];
-
-                            int cibleDroite = Math.min(Y+vitesseHD, board[X].length);
-                            for (int portee = Y; portee < cibleDroite; portee++ ){
-
-                                switch (board[X][portee]){
-                                    case '^':
-                                        int vitesseAller = speed[1][portee - 1];
-                                        int positionAller = board.length - X;
-                                        value += Math.abs(positionAller / vitesseAller) * facteur;
-                                        break;
-                                    case 'v':
-                                        int vitesseRetour = speed[0][portee - 1];
-                                        int positionRetour = X;
-                                        value += Math.abs(positionRetour / vitesseRetour) * facteur;
-                                        break;
-                                    default:
-                                }
-                            }
+        if (role == "HORISONTAL") {
+            for (int ligne = 1; ligne <= 5; ligne++) {
+                // si le pion n'est pas en position finale
+                if (this.board[ligne][0] != '<') {
+                    // on trouve la position du pion
+                    int posColonne = 0;
+                    for (int colonne = 0; colonne < 7; colonne++) {
+                        if (this.board[ligne][colonne] == '<' || this.board[ligne][colonne] == '>') {
+                            posColonne = colonne;
+                            // on enregistre la position de depart
+                            // System.out.print(posToString(ligne, posColonne) + "-");
                             break;
-                        case '<':
-                            int vitesseHG = speed[1][X - 1];
-                            int cibleGauche = Math.max(Y-vitesseHG, 0);
-                            for (int portee = Y; portee >= cibleGauche; portee--){
+                        }
+                    }
+                    // on joue le coup pour obtenir la position d'arrivée
+                    // on regarde l'orientation de la piece
+                    if (this.board[ligne][posColonne] == '>') {
+                        // on recupere la vitesse du pion
+                        int moves = speed[0][ligne - 1];
+                        // on avance case par case
+                        while (moves > 0) {
+                            // on va a droite
+                            posColonne++;
+                            moves--;
+                            // System.out.print(posToString(ligne, posColonne) + ":");
+                            if (posColonne >= 6) {
+                                value += 30;
+                                moves = 0;
+                            } else if (this.board[ligne][posColonne] != ' ') {
+                                // si la case n'est pas vide on passe a la case suivante et il ne reste plus qu'une case de deplacement
+                                moves = 1;
+                                /* On a une piece adverse, on ajoute donc sa valeur de recompenseRetour */
+                                value += recompenseRetour(posColonne, this.board[ligne][posColonne]) * facteur;
+                            } else if (moves == 0) {
+                                // si on a utilisé toute la vitesse ou si on est au bord on renvoie la position actuelle en cible
+                                value += malusMenace(ligne, posColonne, role, facteur);
 
-                                switch (board[X][portee]){
-                                    case '^':
-                                        int vitesseAller = speed[1][portee - 1];
-                                        int positionAller = board.length - X;
-                                        value += Math.abs(positionAller / vitesseAller) * facteur;
-                                        break;
-                                    case 'v':
-                                        int vitesseRetour = speed[0][portee - 1];
-                                        int positionRetour = X;
-                                        value += Math.abs(positionRetour / vitesseRetour) * facteur;
-                                        break;
-                                    default:
-                                }
                             }
+                            // sinon la case est vide et on passe juste a la suivante
+                        }
+                    } else if (this.board[ligne][posColonne] == '<') {
+                        // on recupere la vitesse du pion
+                        int moves = speed[1][ligne - 1];
+                        // on avance case par case
+                        while (moves > 0) {
+                            // on va a gauche
+                            posColonne--;
+                            moves--;
+                            // System.out.print(posToString(ligne, posColonne) + ":");
+                            if (posColonne <= 0) {
+                                moves = 0;
+                                value += 30;
+                            } else if (this.board[ligne][posColonne] != ' ') {
+                                // si la case n'est pas vide on passe a la case suivante et il ne reste plus qu'une case de deplacement
+                                moves = 1;
+                                /* On a une piece adverse, on ajoute donc sa valeur de recompenseRetour */
+                                value += recompenseRetour(posColonne, this.board[ligne][posColonne]) * facteur;
+                            } else if (moves == 0) {
+                                // si on a utilisé toute la vitesse ou si on est au bord on renvoie la position actuelle en cible
+                                value += malusMenace(ligne, posColonne, role, facteur);
+                            }
+                            // sinon la case est vide et on passe juste a la suivante
+                        }
+                    }
+                } else {
+                    /* La piece est en position finale +50 points */
+                    value += 50;
+                }
+            }
+            // System.out.println();
+            // Joueur : "vertical"
+        } else {
+            for (int colonne = 1; colonne <= 5; colonne++) {
+                // si le pion n'est pas en position finale
+                if (this.board[6][colonne] != 'v') {
+                    // on trouve la position du pion
+                    int posLigne = 0;
+                    for (int ligne = 0; ligne < 7; ligne++) {
+                        if (this.board[ligne][colonne] == '^' || this.board[ligne][colonne] == 'v') {
+                            posLigne = ligne;
+                            // on enregistre la position de depart
+                            // System.out.print(posToString(posLigne, colonne) + "-");
                             break;
-                        default:
+                        }
+                    }
+                    // on joue le coup pour obtenir la position d'arrivée
+                    // on regarde l'orientation de la piece
+                    if (this.board[posLigne][colonne] == '^') {
+                        // on recupere la vitesse du pion
+                        int moves = speed[1][colonne - 1];
+                        // on avance case par case
+                        while (moves > 0) {
+                            // on monte
+                            posLigne--;
+                            moves--;
+                            // System.out.print(posToString(posLigne, colonne) + ":");
+                            if (posLigne <= 0) {
+                                value += 30;
+                                moves = 0;
+                            } else if (this.board[posLigne][colonne] != ' ') {
+                                // si la case n'est pas vide on passe a la case suivante et il ne reste plus qu'une case de deplacement
+                                moves = 1;
+                                /* On a une piece adverse, on ajoute donc sa valeur de recompenseRetour */
+                                value += recompenseRetour(posLigne, this.board[posLigne][colonne]) * facteur;
+                            } else if (moves == 0) {
+                                // si on a utilisé toute la vitesse ou si on est au bord on renvoie la position actuelle en cible
+                                value += malusMenace(posLigne, colonne, role, facteur);
+                            }
+                            // sinon la case est vide et on passe juste a la suivante
+                        }
+                    } else if (this.board[posLigne][colonne] == 'v') {
+                        // on recupere la vitesse du pion
+                        int moves = speed[0][colonne - 1];
+                        // on avance case par case
+                        while (moves > 0) {
+                            // on descend
+                            posLigne++;
+                            moves--;
+                            // System.out.print(posToString(posLigne, colonne) + ":");
+                            if (posLigne >= 6) {
+                                value += 30;
+                                moves = 0;
+                            } else if (this.board[posLigne][colonne] != ' ') {
+                                // si la case n'est pas vide on passe a la case suivante et il ne reste plus qu'une case de deplacement
+                                moves = 1;
+                                /* On a une piece adverse, on ajoute donc sa valeur de recompenseRetour */
+                                value += recompenseRetour(posLigne, this.board[posLigne][colonne]) * facteur;
+                            } else if (moves == 0 || posLigne >= 6) {
+                                // si on a utilisé toute la vitesse ou si on est au bord on renvoie la position actuelle en cible
+                                value += malusMenace(posLigne, colonne, role, facteur);
+                            }
+                            // sinon la case est vide et on passe juste a la suivante
+                        }
                     }
                 }
+                else{
+                    value += 50;
+                }
+            }
+        }
+        return value;
+    }
 
+    int recompenseRetour(int position, char piece){
+        int value = 0;
+        switch (piece){
+            case '>':
+                int vitesseDroite = speed[0][position - 1];
+                value += Math.abs(position / vitesseDroite) ;
                 break;
-            case "VERTICAL":
-                /* Parcous les positions de chaque pieces */
-                for (int[] ligne : pieces) {
-                    int X = ligne[0];
-                    int Y = ligne[1];
-                    System.out.println("X = " + X + "; Y = " + Y);
-                    Character cha = this.board[X][Y];
-                    System.out.println("BAH" + cha);
-
-                    switch (cha){
-                        case '^':
-                            int vitesseH = speed[1][Y - 1];
-                            int cibleHaut = Math.max(X - vitesseH, 0);
-                            boolean dansPremierInterval = false;
-                            System.out.println("MAAAARE");
-                            
-
-                            for (int isIn = X; isIn >= cibleHaut; isIn--){
-                                if (board[isIn][Y] == '>' || board[isIn][Y] == '<'){
-                                    dansPremierInterval = true;
-                                }
-                            }
-                            if (dansPremierInterval){
-                                for (int portee = X; portee >= cibleHaut; portee--){
-                                    switch (board[portee][Y]){
-                                        case '>':
-                                            int vitesseAller = speed[0][portee - 1];
-                                            System.out.println("VITESSE" + vitesseAller);
-                                            int positionAller = portee - 1;
-                                            System.out.println("POSITIONALLEE"  +positionAller);
-                                            value += Math.abs(positionAller / vitesseAller) * facteur;
-                                            break;
-                                        case '<':
-                                            int vitesseRetour = speed[1][portee - 1];
-                                            int positionRetour = X;
-                                            value += Math.abs(positionRetour / vitesseRetour) * facteur;
-                                            break;
-                                        case ' ':
-                                            return value;
-                                        default:
-                                    }
-                                }
-                            }
-
-                            break;
-                        case 'v':
-                            int vitesseHG = speed[0][Y - 1];
-                            int cibleBas = Math.min(Y + vitesseHG, board.length);
-                            for (int portee = X; portee < cibleBas; portee++){
-                                switch (board[portee][Y]){
-                                    case '>':
-                                        int vitesseAller = speed[0][portee - 1];
-                                        int positionAller = board.length - X;
-                                        value += Math.abs(positionAller / vitesseAller) * facteur;
-                                        break;
-                                    case '<':
-                                        int vitesseRetour = speed[1][portee - 1];
-                                        int positionRetour = X;
-                                        value += Math.abs(positionRetour / vitesseRetour) * facteur;
-                                        break;
-                                    default:
-                                }
-                            }
-                            break;
-                        default:
-                    }
-                }
+            case '<':
+                int vitesseGauche = speed[1][position - 1];
+                value += Math.abs(position / vitesseGauche);
+                break;
+            case '^':
+                int vitesseHaut = speed[1][position - 1];
+                value += Math.abs(position / vitesseHaut);
+                break;
+            case 'v':
+                int vitesseBas = speed[0][position - 1];
+                value += Math.abs(position / vitesseBas);
                 break;
             default:
         }
@@ -635,6 +672,39 @@ public abstract class ASquadroGame extends AGame implements Serializable {
             default:
         }
         return nb;
+    }
+
+    private int malusMenace (int ligne, int colonne, String role, int facteur) {
+        if (role == "HORISONTAL") {
+            for (int posLigne = 0; posLigne < 7; posLigne++) {
+                if (this.board[posLigne][colonne] == '^') {
+                    int vitesse = speed[1][colonne - 1];
+                    if (vitesse <= Math.abs(ligne - posLigne)) {
+                        return facteur * Math.floorDiv((6 - ligne), vitesse);
+                    }
+                } else if (this.board[posLigne][colonne] == 'v') {
+                    int vitesse = speed[0][colonne - 1];
+                    if (vitesse <= Math.abs(ligne - posLigne)) {
+                        return facteur * Math.floorDiv(ligne + 1, vitesse);
+                    }
+                }
+            }
+        } else {
+            for (int posColonne = 0; posColonne < 7; posColonne++) {
+                if (this.board[ligne][posColonne] == '<') {
+                    int vitesse = speed[1][ligne - 1];
+                    if (vitesse <= Math.abs(colonne - posColonne)) {
+                        return facteur * Math.floorDiv((6 - colonne), vitesse);
+                    }
+                } else if (this.board[ligne][posColonne] == '>') {
+                    int vitesse = speed[0][ligne - 1];
+                    if (vitesse <= Math.abs(colonne - posColonne)) {
+                        return facteur * Math.floorDiv((colonne + 1), vitesse);
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
 }
