@@ -83,13 +83,11 @@ public class AlphaBeta implements IAlgo {
         for (String coup : coupsPossibles) {
             valeursCoups.put(coup, max);
         }
-        while (profActu < profMax) {
-            System.out.println(elapsedTime);
-            System.out.println("PROFONDEUR EXPLOREE : " + profActu);
+        while (profActu <= profMax) {
             for (String move : coupsPossibles) {
                 Date timeActu = new Date();
                 elapsedTime = timeActu.getTime() - startTime.getTime();
-                if (elapsedTime < 9000) {
+                if (elapsedTime < 9500) {
                     IGame new_b = game.play(move, joueurMax);
                     Integer newVal = this.minMax(new_b, profActu, IGame.MIN_VALUE, IGame.MAX_VALUE);
                     if (newVal != null) {
@@ -114,11 +112,6 @@ public class AlphaBeta implements IAlgo {
                 listeMeilleursCoups.add(coup);
             }
         }
-
-        for (String s : listeMeilleursCoups) {
-            System.out.print(s + " ");
-        }
-        System.out.println();
         String meilleurCoup = listeMeilleursCoups.get(rand.nextInt(listeMeilleursCoups.size()));
 
         // Affichage des informations importantes
@@ -126,8 +119,7 @@ public class AlphaBeta implements IAlgo {
         System.out.println("Le meilleur coup est : " + meilleurCoup);
         System.out.println("Nombre de noeuds parcourus : " + this.nbnoeuds);
         System.out.println("Nombre de noeuds decouvertes : " + this.nbfeuilles);
-        System.out.println("Nombre de noeuds decouvertes : " + this.nbfeuilles);
-
+        System.out.println("Profondeur Maximale atteinte : " + profActu);
 
         return meilleurCoup;
     }
@@ -140,7 +132,7 @@ public class AlphaBeta implements IAlgo {
      **/
     public Integer maxMin(IGame game, int profondeur, int alpha, int beta) {
         Date actuTime = new Date();
-        if (actuTime.getTime() - startTime.getTime() > 9900) {
+        if (actuTime.getTime() - startTime.getTime() > 9950) {
             return null;
         } else if (profondeur == 0 || game.isGameOver()) {
             // Astuce pour compter le nombre de feuilles
@@ -168,7 +160,7 @@ public class AlphaBeta implements IAlgo {
     public Integer minMax(IGame game, int profondeur, int alpha, int beta) {
         Date actuTime = new Date();
         // L'ennemi est en fin de partie (plateau = feuille; joueur = ennemi)
-        if (actuTime.getTime() - startTime.getTime() > 9900) {
+        if (actuTime.getTime() - startTime.getTime() > 9950) {
             return null;
         } else if (profondeur == 0 || game.isGameOver()) {
             // Astuce pour compter le nombre de feuilles
