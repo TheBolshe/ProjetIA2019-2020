@@ -58,11 +58,14 @@ public class AlphaBeta implements IAlgo {
         joueurMax = maxRole;
         joueurMin = minRole;
         profMax = maxDepth;
-        startTime = new Date();
     }
 
     @Override
     public String bestMove(IGame game, String role) {
+        startTime = new Date();
+        long elapsedTime = 0;
+
+
         System.out.println("[AlphaBeta]");
 
         nbfeuilles = 0;
@@ -74,23 +77,28 @@ public class AlphaBeta implements IAlgo {
         // Ca va etre la valeur heuristique correspondante au meilleur coup.
         // C'est aussi ce qui va nous permettre de comparer pour effectivement savoir si un coup est mieux qu'un autres
         int max = IGame.MIN_VALUE;
-        for (int prof = 1; prof < profMax; prof++) {
+        int profActu = 1;
+        while (profActu < profMax) {
+            System.out.println(elapsedTime);
+            System.out.println("PROFONDEUR EXPLOREE : " + profActu);
             for (String move : coupsPossibles) {
-                Date actuTime = new Date();
-                IGame new_b = game.play(move, joueurMax);
-                int newVal = this.minMax(new_b, prof, IGame.MIN_VALUE, IGame.MAX_VALUE);
-                System.out.println("Le coup " + move + " a pour valeur minimax " + newVal);
-                if (newVal > max) {
-                    listeMeilleursCoups.clear();
-                    listeMeilleursCoups.add(move);
-                    max = newVal;
-                } else if (newVal == max) {
-                    listeMeilleursCoups.add(move);
+                Date timeActu = new Date();
+                elapsedTime = timeActu.getTime() - startTime.getTime();
+                if (elapsedTime < 9000) {
+                    IGame new_b = game.play(move, joueurMax);
+                    int newVal = this.minMax(new_b, profActu, IGame.MIN_VALUE, IGame.MAX_VALUE);
+                    System.out.println("Le coup " + move + " a pour valeur minimax " + newVal);
+                    if (newVal > max) {
+                        listeMeilleursCoups.clear();
+                        listeMeilleursCoups.add(move);
+                        max = newVal;
+                    } else if (newVal == max) {
+                        listeMeilleursCoups.add(move);
+                    }
                 }
             }
-            System.out.println("PROF MAX : " + prof);
+            profActu++;
         }
-        System.out.println();
         String meilleurCoup = listeMeilleursCoups.get(rand.nextInt(listeMeilleursCoups.size()));
 
         // Affichage des informations importantes
@@ -98,8 +106,6 @@ public class AlphaBeta implements IAlgo {
         System.out.println("Le meilleur coup est : " + meilleurCoup);
         System.out.println("Nombre de noeuds parcourus : " + this.nbnoeuds);
         System.out.println("Nombre de noeuds decouvertes : " + this.nbfeuilles);
-
-        startTime = new Date();
 
         return meilleurCoup;
     }
@@ -113,7 +119,10 @@ public class AlphaBeta implements IAlgo {
      **/
     public int maxMin(IGame game, int profondeur, int alpha, int beta) {
         Date actuTime = new Date();
-        if (profondeur == 0 || game.isGameOver() || actuTime.getTime() - startTime.getTime() > 9900) {
+        if (actuTime.getTime() - startTime.getTime() > 9900) {
+            return IGame.MIN_VALUE;
+        } else
+        if (profondeur == 0 || game.isGameOver()) {
             // Astuce pour compter le nombre de feuilles
             this.nbfeuilles++;
             return game.getValue(this.joueurMax);
@@ -139,7 +148,9 @@ public class AlphaBeta implements IAlgo {
     public int minMax(IGame game, int profondeur, int alpha, int beta) {
         Date actuTime = new Date();
         // L'ennemi est en fin de partie (plateau = feuille; joueur = ennemi)
-        if (profondeur == 0 || game.isGameOver() || actuTime.getTime() - startTime.getTime() > 9900) {
+        if (actuTime.getTime() - startTime.getTime() > 9900) {
+            return IGame.MAX_VALUE;
+        } else if (profondeur == 0 || game.isGameOver()) {
             // Astuce pour compter le nombre de feuilles
             this.nbfeuilles++;
             return game.getValue(this.joueurMin);
