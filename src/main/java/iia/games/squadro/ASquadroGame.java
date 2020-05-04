@@ -377,8 +377,12 @@ public abstract class ASquadroGame extends AGame implements Serializable {
     protected int advancedHeuristic(String role){
         int value = 0;
         int[][] positions = piecesPositions(role);
+        value += menaces(role, positions);
 
+        board[5][4] = '>';
 
+        System.out.println("Heuristique");
+        System.out.println(value);
 
         return value;
     }
@@ -442,17 +446,132 @@ public abstract class ASquadroGame extends AGame implements Serializable {
     protected int menaces(String role, int[][] pieces){
         System.out.println("MENACE");
         int value = 0;
-        for (int[] coordonnees: pieces) {
-            for (int place : coordonnees) {
-                System.out.print(place);
-            }
-        }
+        int facteur = 30;
 
         switch (role){
             case "HORISONTAL":
+                /* Parcous les positions de chaque pieces */
+                for (int[] ligne : pieces) {
+                    int X = ligne[0];
+                    int Y = ligne[1];
+                    System.out.println("X = " + X + "; Y = " + Y);
+                    Character cha = this.board[X][Y];
+                    System.out.println("NAH" + cha);
+
+                    switch (cha){
+                        case '>':
+                            int vitesseHD = speed[0][X - 1];
+
+                            int cibleDroite = Math.min(Y+vitesseHD, board[X].length);
+                            for (int portee = Y; portee < cibleDroite; portee++ ){
+
+                                switch (board[X][portee]){
+                                    case '^':
+                                        int vitesseAller = speed[1][portee - 1];
+                                        int positionAller = board.length - X;
+                                        value += Math.abs(positionAller / vitesseAller) * facteur;
+                                        break;
+                                    case 'v':
+                                        int vitesseRetour = speed[0][portee - 1];
+                                        int positionRetour = X;
+                                        value += Math.abs(positionRetour / vitesseRetour) * facteur;
+                                        break;
+                                    default:
+                                }
+                            }
+                            break;
+                        case '<':
+                            int vitesseHG = speed[1][X - 1];
+                            int cibleGauche = Math.max(Y-vitesseHG, 0);
+                            for (int portee = Y; portee >= cibleGauche; portee--){
+
+                                switch (board[X][portee]){
+                                    case '^':
+                                        int vitesseAller = speed[1][portee - 1];
+                                        int positionAller = board.length - X;
+                                        value += Math.abs(positionAller / vitesseAller) * facteur;
+                                        break;
+                                    case 'v':
+                                        int vitesseRetour = speed[0][portee - 1];
+                                        int positionRetour = X;
+                                        value += Math.abs(positionRetour / vitesseRetour) * facteur;
+                                        break;
+                                    default:
+                                }
+                            }
+                            break;
+                        default:
+                    }
+                }
 
                 break;
             case "VERTICAL":
+                /* Parcous les positions de chaque pieces */
+                for (int[] ligne : pieces) {
+                    int X = ligne[0];
+                    int Y = ligne[1];
+                    System.out.println("X = " + X + "; Y = " + Y);
+                    Character cha = this.board[X][Y];
+                    System.out.println("BAH" + cha);
+
+                    switch (cha){
+                        case '^':
+                            int vitesseH = speed[1][Y - 1];
+                            int cibleHaut = Math.max(X - vitesseH, 0);
+                            boolean dansPremierInterval = false;
+                            System.out.println("MAAAARE");
+                            
+
+                            for (int isIn = X; isIn >= cibleHaut; isIn--){
+                                if (board[isIn][Y] == '>' || board[isIn][Y] == '<'){
+                                    dansPremierInterval = true;
+                                }
+                            }
+                            if (dansPremierInterval){
+                                for (int portee = X; portee >= cibleHaut; portee--){
+                                    switch (board[portee][Y]){
+                                        case '>':
+                                            int vitesseAller = speed[0][portee - 1];
+                                            System.out.println("VITESSE" + vitesseAller);
+                                            int positionAller = portee - 1;
+                                            System.out.println("POSITIONALLEE"  +positionAller);
+                                            value += Math.abs(positionAller / vitesseAller) * facteur;
+                                            break;
+                                        case '<':
+                                            int vitesseRetour = speed[1][portee - 1];
+                                            int positionRetour = X;
+                                            value += Math.abs(positionRetour / vitesseRetour) * facteur;
+                                            break;
+                                        case ' ':
+                                            return value;
+                                        default:
+                                    }
+                                }
+                            }
+
+                            break;
+                        case 'v':
+                            int vitesseHG = speed[0][Y - 1];
+                            int cibleBas = Math.min(Y + vitesseHG, board.length);
+                            for (int portee = X; portee < cibleBas; portee++){
+                                switch (board[portee][Y]){
+                                    case '>':
+                                        int vitesseAller = speed[0][portee - 1];
+                                        int positionAller = board.length - X;
+                                        value += Math.abs(positionAller / vitesseAller) * facteur;
+                                        break;
+                                    case '<':
+                                        int vitesseRetour = speed[1][portee - 1];
+                                        int positionRetour = X;
+                                        value += Math.abs(positionRetour / vitesseRetour) * facteur;
+                                        break;
+                                    default:
+                                }
+                            }
+                            break;
+                        default:
+                    }
+                }
                 break;
             default:
         }

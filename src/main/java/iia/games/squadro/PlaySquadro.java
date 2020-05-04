@@ -15,8 +15,9 @@ public class PlaySquadro {
 
         /* On reteste avec un premier coup */
         SquadroGameV new_board = (SquadroGameV) h1.play(play, "VERTICAL");
+
         new_board.printBoard();
-        int new_heuristic = new_board.getValue("HORISONTAL"); // Calcul d'heuristique du nouveau plateau apres le coup
+        int new_heuristic = new_board.getValue("VERTICAL"); // Calcul d'heuristique du nouveau plateau apres le coup
         System.out.println(new_heuristic);
         h1.possibleMoves("VERTICAL");
 
