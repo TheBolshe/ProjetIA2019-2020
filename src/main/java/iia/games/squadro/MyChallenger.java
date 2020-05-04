@@ -44,7 +44,7 @@ public class MyChallenger implements IChallenger {
                 break;
             default:
         }
-        this.algo = new Minimax(my_side, other_side, 3);
+        this.algo = new Minimax(my_side, other_side, 5);
     }
 
     @Override
