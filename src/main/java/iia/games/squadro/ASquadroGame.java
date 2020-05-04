@@ -110,7 +110,7 @@ public abstract class ASquadroGame extends AGame implements Serializable {
     }
 
     public void updateBoard (String move, String player) {
-        //System.out.println("ORIGINE");
+        System.out.println(player + " " + move);
         //printBoard();
         int[] positions = stringToPos(move);
         int[] depart = {positions[0], positions[1]};
@@ -167,7 +167,7 @@ public abstract class ASquadroGame extends AGame implements Serializable {
                         if (this.board[ligne][colonne] == '<' || this.board[ligne][colonne] == '>') {
                             posColonne = colonne;
                             // on enregistre la position de depart
-                            System.out.print(posToString(ligne, posColonne) + "-");
+                            // System.out.print(posToString(ligne, posColonne) + "-");
                             coup.append(posToString(ligne, posColonne)).append("-");
                             break;
                         }
@@ -182,7 +182,7 @@ public abstract class ASquadroGame extends AGame implements Serializable {
                             // on va a droite
                             posColonne++;
                             moves--;
-                            System.out.print(posToString(ligne, posColonne) + ":");
+                            // System.out.print(posToString(ligne, posColonne) + ":");
                             if (posColonne >= 6) {
                                 coup.append(posToString(ligne, posColonne));
                                 moves = 0;
@@ -204,7 +204,7 @@ public abstract class ASquadroGame extends AGame implements Serializable {
                             // on va a gauche
                             posColonne--;
                             moves--;
-                            System.out.print(posToString(ligne, posColonne) + ":");
+                            // System.out.print(posToString(ligne, posColonne) + ":");
                             if (posColonne <= 0) {
                                 coup.append(posToString(ligne, posColonne));
                                 moves = 0;
@@ -221,20 +221,20 @@ public abstract class ASquadroGame extends AGame implements Serializable {
                     }
                 }
             }
-            System.out.println();
+            // System.out.println();
             // Joueur : "vertical"
         } else {
             for (int colonne = 1; colonne <= 5; colonne++) {
                 StringBuilder coup = new StringBuilder();
                 // si le pion n'est pas en position finale
-                if (this.board[6][colonne] != '<') {
+                if (this.board[6][colonne] != 'v') {
                     // on trouve la position du pion
                     int posLigne = 0;
                     for (int ligne = 0; ligne < 7; ligne++) {
                         if (this.board[ligne][colonne] == '^' || this.board[ligne][colonne] == 'v') {
                             posLigne = ligne;
                             // on enregistre la position de depart
-                            System.out.print(posToString(posLigne, colonne) + "-");
+                            // System.out.print(posToString(posLigne, colonne) + "-");
                             coup.append(posToString(posLigne, colonne)).append("-");
                             break;
                         }
@@ -249,7 +249,7 @@ public abstract class ASquadroGame extends AGame implements Serializable {
                             // on monte
                             posLigne--;
                             moves--;
-                            System.out.print(posToString(posLigne, colonne) + ":");
+                            // System.out.print(posToString(posLigne, colonne) + ":");
                             if (posLigne <= 0) {
                                 coup.append(posToString(posLigne, colonne));
                                 moves = 0;
@@ -271,7 +271,7 @@ public abstract class ASquadroGame extends AGame implements Serializable {
                             // on descend
                             posLigne++;
                             moves--;
-                            System.out.print(posToString(posLigne, colonne) + ":");
+                            // System.out.print(posToString(posLigne, colonne) + ":");
                             if (posLigne >= 6) {
                                 coup.append(posToString(posLigne, colonne));
                                 moves = 0;
@@ -289,7 +289,7 @@ public abstract class ASquadroGame extends AGame implements Serializable {
                 }
             }
         }
-        System.out.println();
+        // System.out.println();
         return coups;
     }
 
