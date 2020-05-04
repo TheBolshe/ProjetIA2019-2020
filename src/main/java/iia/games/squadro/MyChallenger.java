@@ -1,7 +1,7 @@
 /*
  * Nom de classe : MyChallenger
  *
- * Desciption : Cette classe sert pour faire l'intermediaire entre le serveur arbitre et notre joueur implemnente dans ce code
+ * Desciption : Cette classe sert a faire l'intermediaire entre le serveur arbitre et notre joueur implemnente dans ce code
  *
  * Version : 1.0
  *
@@ -22,9 +22,7 @@ public class MyChallenger implements IChallenger {
     String other_side;
     IAlgo algo;
 
-    public MyChallenger(String role){
-        setRole(role);
-    }
+    public MyChallenger(){ }
 
     @Override
     public String teamName() {
@@ -46,8 +44,7 @@ public class MyChallenger implements IChallenger {
                 break;
             default:
         }
-        this.algo = new Minimax(my_side, other_side, 5);
-
+        this.algo = new Minimax(my_side, other_side, 2);
     }
 
     @Override
@@ -67,19 +64,16 @@ public class MyChallenger implements IChallenger {
 
     @Override
     public String victory() {
-        String speech = "Merci à vous d’être là ce soir ! Vous êtes des dizaines de milliers et je ne vois que quelques visages. Merci, merci d’être là, de vous être battus avec courage et bienveillance pendant tant de mois. Parce que oui, ce soir, vous l’avez emporté ! La France l’a emporté ! Ce que nous avons fait, depuis tant et tant de mois, n’a ni précédent, ni équivalent. Tout le monde nous disait que c’était impossible, mais ils ne connaissaient pas la France !";
-        return speech;
+        return "Merci à vous d’être là ce soir ! Vous êtes des dizaines de milliers et je ne vois que quelques visages. Merci, merci d’être là, de vous être battus avec courage et bienveillance pendant tant de mois. Parce que oui, ce soir, vous l’avez emporté ! La France l’a emporté ! Ce que nous avons fait, depuis tant et tant de mois, n’a ni précédent, ni équivalent. Tout le monde nous disait que c’était impossible, mais ils ne connaissaient pas la France !";
     }
 
     @Override
     public String defeat() {
-        String speech = "I had not drafted a concession speech. I had been working on a victory speech";
-        return speech;
+        return "I had not drafted a concession speech. I had been working on a victory speech";
     }
 
     @Override
     public String tie() {
-        String speech = "Je suis content de ce que vous avez fait collectivement, en terme d’état d’esprit. Voilà, c’est un point de plus. Il faudra finir le job en novembre les mecs. Déçu? Oui. Je le répète, c’est normal quand on va au bout de soi-même et collectivement, qu’il n’y ait pas la récompense. Au mois de novembre, à nous de plier l’affaire, pour atteindre notre objectif. Bravo à tous les gars!";
-        return speech;
+        return "Je suis content de ce que vous avez fait collectivement, en terme d’état d’esprit. Voilà, c’est un point de plus. Il faudra finir le job en novembre les mecs. Déçu? Oui. Je le répète, c’est normal quand on va au bout de soi-même et collectivement, qu’il n’y ait pas la récompense. Au mois de novembre, à nous de plier l’affaire, pour atteindre notre objectif. Bravo à tous les gars!";
     }
 }
