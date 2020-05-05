@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"iia.games.algo"},{"l":"iia.games.base"},{"l":"iia.games.contest"},{"l":"iia.games.nim"},{"l":"iia.games.squadro"}]
