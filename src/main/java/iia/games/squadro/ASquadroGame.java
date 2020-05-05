@@ -707,4 +707,54 @@ public abstract class ASquadroGame extends AGame implements Serializable {
         return 0;
     }
 
+
+
+    protected int coupRestant(String role){
+        int value = 0;
+        ArrayList<String> mouvements = this.possibleMoves(role);
+        for (String position : mouvements) {
+            
+        }
+        switch (role){
+            case "VERTICAL":
+        }
+        return value;
+    }
+
+    private int distance(Character pion, int position){
+        int value = 0;
+        switch (pion){
+            case '<':
+                int vitesseRetour = speed[0][position - 1];
+                int distanceRetourGauche = position;
+                int parcoursRetourGauche = Math.abs(distanceRetourGauche / vitesseRetour);
+                value = parcoursRetourGauche;
+                break;
+            case '>':
+                int vitesseDroite = speed[0][position - 1];
+                int distanceAller = 6 - position;
+                int distanceRetourDroite = 6;
+                int parcoursAllerDroite = Math.abs(distanceAller / vitesseDroite);
+                int parcoursRetourDroite = Math.abs(distanceRetourDroite / (4 - vitesseDroite));
+                value = parcoursAllerDroite + parcoursRetourDroite;
+                break;
+            case '^':
+                int vitesseHautAller = speed[1][position - 1];
+                int distanceHautAller = position;
+                int distanceBasRetour = 6 - position;
+                int parcoursAllerHaut = Math.abs(distanceHautAller / vitesseHautAller);
+                int parcoursRetourBas = Math.abs((distanceBasRetour / 4 - vitesseHautAller));
+                value = parcoursAllerHaut + parcoursRetourBas;
+                break;
+            case'v':
+                int vitesseBasAller = speed[1][position - 1];
+                int distanceBasALler = 6 - position;
+                int parcoursAllerBas = Math.abs(distanceBasALler / vitesseBasAller);
+                value = parcoursAllerBas;
+                break;
+            default:
+        }
+        return value;
+    }
+
 }
