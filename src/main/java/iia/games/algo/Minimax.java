@@ -34,13 +34,12 @@ public class Minimax implements IAlgo {
         this.nbNodes = 1;
         this.nbLeaves = 0;
         ArrayList<String> listeMeilleursCoups = new ArrayList<String>();
-        int bestMoveHeuristicValue = IGame.MIN_VALUE;
+        double bestMoveHeuristicValue = IGame.MIN_VALUE;
         // On calcul tous les coups possibles
         ArrayList<String> allMoves = game.possibleMoves(roleMax);
         for (String move : allMoves) {
-            int heuristicMove;
             IGame new_b = game.play(move, roleMax);
-            heuristicMove = minmax(new_b, depthMax - 1);
+            double heuristicMove = minmax(new_b, depthMax - 1);
             System.out.println("Le coup " + move + " a pour valeur minimax " + heuristicMove);
             if (heuristicMove > bestMoveHeuristicValue) {
                 bestMoveHeuristicValue = heuristicMove;
@@ -74,14 +73,14 @@ public class Minimax implements IAlgo {
             PRIVATE METHODS
             ===============
              */
-    public int maxmin(IGame game, int depth) {
+    public double maxmin(IGame game, int depth) {
         // C'est joueurMax qui joue
         if (depth == 0 || game.isGameOver()) {
             nbLeaves++;
             return game.getValue(roleMax);
         } else {
             nbNodes++;
-            int maxValue = IGame.MIN_VALUE;
+            double maxValue = IGame.MIN_VALUE;
             // System.out.println("Coups Possibles for " + plateau + " :  "+ lesCoups);
             for (IGame succ : game.successors(roleMax)) {
                 maxValue = Math.max(maxValue, minmax(succ, depth - 1));
@@ -92,14 +91,14 @@ public class Minimax implements IAlgo {
         }
     }
 
-    public int minmax(IGame game, int depth) {
+    public double minmax(IGame game, int depth) {
         // C'est joueurMin qui joue
         if (depth == 0 || game.isGameOver()) {
             nbLeaves++;
             return game.getValue(roleMin);
         } else {
             nbNodes++;
-            int minValue = IGame.MAX_VALUE;
+            double minValue = IGame.MAX_VALUE;
             // System.out.println("Coups Possibles for " + plateau + " :  "+ lesCoups);
             for (IGame succ : game.successors(roleMin)) {
                 minValue = Math.min(minValue, maxmin(succ, depth - 1));

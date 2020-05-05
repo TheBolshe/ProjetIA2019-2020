@@ -13,7 +13,7 @@ public class NimGameFirst extends ANimGame{
     }
 
     @Override
-    public int getValue(String role) {
+    public double getValue(String role) {
         int n = getN_matches();
         if (role.equals(ROLE_FIRST)) {
             if (n == 0)

@@ -4,8 +4,8 @@ import iia.games.base.IGame;
 
 public class SquadroGameV extends ASquadroGame {
 
-    public SquadroGameV() {
-        super();
+    public SquadroGameV(int h) {
+        super(h);
     }
 
     @Override
@@ -16,13 +16,13 @@ public class SquadroGameV extends ASquadroGame {
     }
 
     @Override
-    public int getValue(String role) {
+    public double getValue(String role) {
         // TODO heuristic for Vertical player
         /* Avant meme de choisir une fonction heuristique particuliere on applique ca a chaque fois */
         switch (whoWon()) {
             case "PERSONNE":
-                return basicHeuristic(role);
-                // return advancedHeuristic(role);
+                if (this.h == 1) return basicHeuristic(role);
+                if (this.h == 2) return advancedHeuristic(role);
             case "HORISONTAL":
                 return super.MIN_VALUE;
             case "VERTICAL":

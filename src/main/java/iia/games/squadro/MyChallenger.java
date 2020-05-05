@@ -34,12 +34,12 @@ public class MyChallenger implements IChallenger {
     public void setRole(String role) {
         switch (role){
             case "HORIZONTAL":
-                this.game = new SquadroGameH();
+                this.game = new SquadroGameH(2);
                 this.my_side = "HORISONTAL";
                 this.other_side = "VERTICAL";
                 break;
             case "VERTICAL":
-                this.game = new SquadroGameV();
+                this.game = new SquadroGameV(2);
                 this.my_side = "VERTICAL";
                 this.other_side = "HORISONTAL";
                 break;
@@ -51,13 +51,11 @@ public class MyChallenger implements IChallenger {
     @Override
     public void iPlay(String move) {
         this.game.updateBoard(move, this.my_side);
-        // this.game.printBoard();
     }
 
     @Override
     public void otherPlay(String move) {
         this.game.updateBoard(move, this.other_side);
-        // this.game.printBoard();
     }
 
     @Override

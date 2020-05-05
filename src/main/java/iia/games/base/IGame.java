@@ -10,7 +10,7 @@ public interface IGame {
     int MAX_VALUE = Integer.MAX_VALUE;
     int MIN_VALUE = - MAX_VALUE;
 
-    int getValue(String role);
+    double getValue(String role);
     IGame play(String move, String role);
     ArrayList<String> possibleMoves(String role);
     ArrayList<IGame> successors(String role);
